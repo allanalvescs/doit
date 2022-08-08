@@ -1,8 +1,9 @@
 import { Heading } from "@chakra-ui/react";
 import React from "react";
+import Routes from "./Routes";
 
 const App = () => {
-  return <Heading as="h1">App</Heading>;
+  return <Routes />;
 };
 
 export default App;
