@@ -17,6 +17,8 @@ import Input from "../../components/Form";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const singinSchema = yup.object().shape({
   email: yup.string().required("email obrigatório *"),
@@ -37,8 +39,16 @@ const Login = () => {
     resolver: yupResolver(singinSchema),
   });
 
-  const handleClick = (data: FormValue) =>
-    console.log("Dados do usuário: ", data);
+  const [loading, setLoading] = useState(false);
+
+  const { singIn } = useAuth();
+
+  const handleSingIn = (data: FormValue) => {
+    setLoading(true);
+    singIn(data)
+      .then((_) => setLoading(false))
+      .catch((err) => setLoading(false));
+  };
 
   return (
     <Flex
@@ -75,7 +85,7 @@ const Login = () => {
           </Text>
         </Grid>
         <Grid
-          onSubmit={handleSubmit(handleClick)}
+          onSubmit={handleSubmit(handleSingIn)}
           as="form"
           mt={["6", "6", "0", "0"]}
           w={["100%", "100%", "40%", "40%"]}
@@ -113,6 +123,7 @@ const Login = () => {
           </VStack>
           <VStack mt="6" spacing="5">
             <Button
+              isLoading={loading}
               type="submit"
               bg="purple.800"
               color="white"
