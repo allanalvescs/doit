@@ -1,12 +1,12 @@
-import { Box, Button, Heading } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import Header from "../../components/Header";
 import { useAuth } from "../../contexts/AuthContext";
 
 const Dashboard = () => {
   const { user, singOut } = useAuth();
   return (
     <Box>
-      <Heading as="h1">Welcome {user.name}</Heading>
-      <Button onClick={singOut}>Deslogar</Button>
+      <Header />
     </Box>
   );
 };
