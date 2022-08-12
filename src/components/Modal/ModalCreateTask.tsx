@@ -49,14 +49,14 @@ const ModalCreateTask = ({ isOpen, onClose }: ModalCreateProps) => {
     resolver: yupResolver(createTaskSchema),
   });
 
-  const { user, accesToken } = useAuth();
+  const { user, accessToken } = useAuth();
 
   const { createdTasks } = useTasks();
 
   const handleCreateTask = (data: FormValue) => {
     const newData = { ...data, userId: user.id, completed: false };
 
-    createdTasks(newData, accesToken);
+    createdTasks(newData, accessToken).then((_) => onClose());
   };
 
   return (

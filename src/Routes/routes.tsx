@@ -12,12 +12,12 @@ const Route = ({
   component: Component,
   ...rest
 }: ReactRouteProps) => {
-  const { accesToken } = useAuth();
+  const { accessToken } = useAuth();
 
   return (
     <ReactRoute
       render={() => {
-        return !!isPrivate === !!accesToken ? (
+        return !!isPrivate === !!accessToken ? (
           <Component />
         ) : (
           <Redirect to={isPrivate ? "/" : "/dashboard"} />
