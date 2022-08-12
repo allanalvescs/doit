@@ -21,9 +21,10 @@ interface Tasks {
 
 interface CardProps {
   tasks: Tasks;
+  onClick(task: Tasks): void;
 }
 
-const Card = ({ tasks }: CardProps) => {
+const Card = ({ tasks, onClick }: CardProps) => {
   const { user, accessToken } = useAuth();
   const { deleteTask, updateTask } = useTasks();
 
@@ -70,7 +71,7 @@ const Card = ({ tasks }: CardProps) => {
         </HStack>
       </Flex>
 
-      <Box w="100%" mt="4">
+      <Box w="100%" mt="4" onClick={() => onClick(tasks)}>
         <Text>{tasks.description}</Text>
         <Progress
           colorScheme="purple"
