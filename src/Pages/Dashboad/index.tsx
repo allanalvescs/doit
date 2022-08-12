@@ -1,11 +1,25 @@
-import { Box, Button, Grid } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+
 import Card from "../../components/Card";
 import SearchBox from "../../components/Form/SearchBox";
 import Header from "../../components/Header";
 import { useAuth } from "../../contexts/AuthContext";
 
+import { useTasks } from "../../contexts/TasksContext";
+
 const Dashboard = () => {
-  const { singOut } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const { user, accessToken } = useAuth();
+  const { tasks, loadTasks } = useTasks();
+
+  useEffect(() => {
+    loadTasks(user.id, accessToken).then((_) => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    loadTasks(user.id, accessToken).then((_) => setLoading(false));
+  }, [tasks]);
   return (
     <Box>
       <Header />
@@ -17,8 +31,8 @@ const Dashboard = () => {
         paddingX="8"
         mt="8"
       >
-        {[1, 2, 3, 4, 5, 6].map((_) => (
-          <Card />
+        {tasks.map((task) => (
+          <Card tasks={task} key={task.id} />
         ))}
       </Grid>
     </Box>

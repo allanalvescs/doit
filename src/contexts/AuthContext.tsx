@@ -30,7 +30,7 @@ interface SingInCredentials {
 
 interface AuthContextDatas {
   user: User;
-  accesToken: string;
+  accessToken: string;
   singIn(credentials: SingInCredentials): Promise<void>;
   singOut(): void;
 }
@@ -72,7 +72,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   return (
     <AuthContext.Provider
       value={{
-        accesToken: data.accessToken,
+        accessToken: data.accessToken,
         user: data.user,
         singIn,
         singOut,
