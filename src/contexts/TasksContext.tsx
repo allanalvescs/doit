@@ -133,9 +133,9 @@ const TasksProvider = ({ children }: TasksProviderProps) => {
 
       setTasks(response.data);
 
-      if (!response.data) {
-        setNotFound(true);
+      if (!response.data.length) {
         setTaskNotFound(taskTitle);
+        return setNotFound(true);
       }
     },
     []
