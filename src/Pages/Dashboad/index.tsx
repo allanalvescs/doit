@@ -1,14 +1,13 @@
 import { useDisclosure } from "@chakra-ui/core";
-import { Box, Grid } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 
-import Card from "../../components/Card";
-import SearchBox from "../../components/Form/SearchBox";
-import Header from "../../components/Header";
+import { useEffect, useState } from "react";
 import ModalTaskDetail from "../../components/Modal/ModalTaskDetail";
 import { useAuth } from "../../contexts/AuthContext";
 
 import { useTasks } from "../../contexts/TasksContext";
+import FirstTask from "./FirstTask";
+import NotFound from "./NotFound";
+import TaskList from "./TaskList";
 
 interface Tasks {
   id: string;
@@ -22,41 +21,50 @@ const Dashboard = () => {
   const [selectTask, setSelectTask] = useState<Tasks>({} as Tasks);
 
   const { user, accessToken } = useAuth();
-  const { tasks, loadTasks } = useTasks();
+  const { tasks, loadTasks, notFound, taskNotFound } = useTasks();
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isTaskDetailOpen,
+    onClose: onTaskDetailClose,
+    onOpen: onTaskDetailOpen,
+  } = useDisclosure();
 
   useEffect(() => {
     loadTasks(user.id, accessToken).then((_) => setLoading(false));
   }, []);
 
-  // useEffect(() => {
-  //   loadTasks(user.id, accessToken).then((_) => setLoading(false));
-  // }, [tasks]);
-
   const handleOpenCardTask = (task: Tasks) => {
     setSelectTask(task);
-    onOpen();
+    onTaskDetailOpen();
   };
+
+  if (notFound) {
+    return (
+      <NotFound
+        selectTask={selectTask}
+        taskNotFound={taskNotFound}
+        onTaskDetailClose={onTaskDetailClose}
+        isTaskDetailOpen={isTaskDetailOpen}
+      />
+    );
+  }
 
   return (
     <>
-      <ModalTaskDetail isOpen={isOpen} onClose={onClose} task={selectTask} />
-      <Box>
-        <Header />
-        <SearchBox />
-        <Grid
-          w="100%"
-          templateColumns="repeat(auto-fill,minmax(420px,1fr))"
-          gap={10}
-          paddingX="8"
-          mt="8"
-        >
-          {tasks.map((task) => (
-            <Card tasks={task} key={task.id} onClick={handleOpenCardTask} />
-          ))}
-        </Grid>
-      </Box>
+      <ModalTaskDetail
+        isOpen={isTaskDetailOpen}
+        onClose={onTaskDetailClose}
+        task={selectTask}
+      />
+      {!loading && !tasks.length ? (
+        <FirstTask />
+      ) : (
+        <TaskList
+          loading={loading}
+          tasks={tasks}
+          handleOpenCardTask={handleOpenCardTask}
+        />
+      )}
     </>
   );
 };

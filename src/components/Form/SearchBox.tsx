@@ -14,7 +14,7 @@ interface SeachData {
 
 const SearchBox = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { searchTasks, tasks, setTasks } = useTasks();
+  const { searchTasks } = useTasks();
   const { accessToken } = useAuth();
 
   const { register, handleSubmit } = useForm<SeachData>();
