@@ -26,7 +26,17 @@ interface CardProps {
 
 const Card = ({ tasks, onClick }: CardProps) => {
   const { user, accessToken } = useAuth();
-  const { deleteTask, updateTask } = useTasks();
+  const { deleteTask, updateTask, loadTasks } = useTasks();
+
+  const handleDeleteTask = () => {
+    deleteTask(tasks.id, accessToken);
+    loadTasks(user.id, accessToken);
+  };
+
+  const handleUpdateTask = () => {
+    updateTask(tasks.id, user.id, accessToken);
+    loadTasks(user.id, accessToken);
+  };
 
   return (
     <Box
@@ -52,12 +62,12 @@ const Card = ({ tasks, onClick }: CardProps) => {
             borderColor="gray.200"
             borderRadius="5px"
             bg="white"
-            onClick={() => deleteTask(tasks.id, accessToken)}
+            onClick={handleDeleteTask}
           >
             <FaTrash color="gray.200" />
           </Center>
           <Center
-            onClick={() => updateTask(tasks.id, user.id, accessToken)}
+            onClick={handleUpdateTask}
             as="button"
             w="30px"
             h="30px"
