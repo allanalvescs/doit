@@ -30,9 +30,9 @@ const Dashboard = () => {
     loadTasks(user.id, accessToken).then((_) => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    loadTasks(user.id, accessToken).then((_) => setLoading(false));
-  }, [tasks]);
+  // useEffect(() => {
+  //   loadTasks(user.id, accessToken).then((_) => setLoading(false));
+  // }, [tasks]);
 
   const handleOpenCardTask = (task: Tasks) => {
     setSelectTask(task);

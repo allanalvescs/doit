@@ -1,11 +1,12 @@
 import { AxiosResponse } from "axios";
-import {
+import React, {
   createContext,
   useContext,
   useState,
   useCallback,
   ReactNode,
 } from "react";
+import { boolean } from "yup/lib/locale";
 import api from "../server/api";
 
 interface Tasks {
@@ -30,6 +31,10 @@ interface TasksContextData {
     userId: string,
     accessToken: string
   ): Promise<void>;
+  searchTasks(taskTitle: string, accessToken: string): Promise<void>;
+  setTasks: React.Dispatch<React.SetStateAction<Tasks[]>>;
+  notFound: boolean;
+  taskNotFound: string;
 }
 
 const TasksContext = createContext<TasksContextData>({} as TasksContextData);
@@ -38,6 +43,8 @@ const useTasks = () => useContext(TasksContext);
 
 const TasksProvider = ({ children }: TasksProviderProps) => {
   const [tasks, setTasks] = useState<Tasks[]>([]);
+  const [notFound, setNotFound] = useState(false);
+  const [taskNotFound, setTaskNotFound] = useState("");
 
   const loadTasks = useCallback(async (userId: string, accessToken: string) => {
     try {
@@ -48,6 +55,7 @@ const TasksProvider = ({ children }: TasksProviderProps) => {
       });
 
       setTasks(response.data);
+      console.log(tasks);
     } catch (err) {
       console.log(err);
     }
@@ -115,9 +123,37 @@ const TasksProvider = ({ children }: TasksProviderProps) => {
     []
   );
 
+  const searchTasks = useCallback(
+    async (taskTitle: string, accessToken: string) => {
+      const response = await api.get(`/tasks?title_like=${taskTitle}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setTasks(response.data);
+
+      if (!response.data) {
+        setNotFound(true);
+        setTaskNotFound(taskTitle);
+      }
+    },
+    []
+  );
+
   return (
     <TasksContext.Provider
-      value={{ tasks, createdTasks, loadTasks, deleteTask, updateTask }}
+      value={{
+        tasks,
+        createdTasks,
+        loadTasks,
+        deleteTask,
+        updateTask,
+        searchTasks,
+        setTasks,
+        notFound,
+        taskNotFound,
+      }}
     >
       {children}
     </TasksContext.Provider>

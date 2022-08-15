@@ -51,12 +51,14 @@ const ModalCreateTask = ({ isOpen, onClose }: ModalCreateProps) => {
 
   const { user, accessToken } = useAuth();
 
-  const { createdTasks } = useTasks();
+  const { createdTasks, loadTasks } = useTasks();
 
   const handleCreateTask = (data: FormValue) => {
     const newData = { ...data, userId: user.id, completed: false };
 
     createdTasks(newData, accessToken).then((_) => onClose());
+
+    loadTasks(user.id, accessToken);
   };
 
   return (
